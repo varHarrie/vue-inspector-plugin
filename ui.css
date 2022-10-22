@@ -76,6 +76,7 @@
 .vue-inspector-overlay {
   position: fixed;
   z-index: 100000;
+  padding: 4px;
   border: 1px solid rgba(66, 184, 131, 0.8);
   background: rgba(66, 184, 131, 0.2);
   pointer-events: none;
@@ -83,17 +84,15 @@
 }
 
 .vue-inspector-overlay::before {
-  position: absolute;
-  bottom: 100%;
-  margin-left: -1px;
-  margin-right: -1px;
-  margin-bottom: 4px;
+  position: sticky;
+  top: 4px;
+  left: 4px;
   padding: 0 4px;
-  display: block;
+  display: inline-block;
   max-width: 100%;
   border-radius: 2px;
   border: 1px solid rgba(66, 184, 131, 0.8);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.8);
   color: rgba(0, 0, 0, 0.45);
   content: attr(data-vue-inspector-overlay-title);
   font-size: 12px;
