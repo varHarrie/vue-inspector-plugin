@@ -175,3 +175,6 @@ document.addEventListener(
   },
   { capture: true },
 );
+
+window.addEventListener('scroll', hideOverlay);
+window.addEventListener('resize', hideOverlay);
