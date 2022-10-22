@@ -103,7 +103,7 @@ function showDropdown(e) {
       $title.innerText = 'RouterView';
       $title.className = 'vue-inspector-purple';
     } else {
-      $title.innerText = `<${title || 'unknown'} />`;
+      $title.innerText = title || 'unknown';
       $title.className = 'vue-inspector-green';
     }
 
