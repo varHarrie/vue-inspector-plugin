@@ -106,7 +106,7 @@
   border-radius: 2px;
   border: 1px solid rgba(66, 184, 131, 0.8);
   background: rgba(255, 255, 255, 0.8);
-  color: rgba(0, 0, 0, 0.45);
+  color: #42b883;
   content: attr(data-vue-inspector-overlay-title);
   font-size: 12px;
   line-height: 1.5em;

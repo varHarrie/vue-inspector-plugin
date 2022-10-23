@@ -69,7 +69,7 @@ function showOverlay(el, title) {
   $overlay.style.left = left + 'px';
   $overlay.style.width = width + 'px';
   $overlay.style.height = height + 'px';
-  $overlay.setAttribute('data-vue-inspector-overlay-title', `${title} ${width}*${height}`);
+  $overlay.setAttribute('data-vue-inspector-overlay-title', `${title} ${width}×${height}`);
 }
 
 function hideOverlay() {
