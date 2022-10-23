@@ -25,10 +25,10 @@ function getVmChain(vm) {
   return chain;
 }
 
-function isRouterView(vm) {
-  if (!vm.$route) return false;
+function getMatchedRoute(vm) {
+  if (!vm.$route) return undefined;
 
-  return vm.$route.matched.some((route) => {
+  return vm.$route.matched.find((route) => {
     return Object.keys(route.instances).some((name) => route.instances[name] === vm);
   });
 }
@@ -90,27 +90,34 @@ function showDropdown(e) {
   $dropdown.style.top = point.y + 'px';
 
   vms.forEach((vm) => {
-    const title = vm.$options._componentTag;
     const filePath = vm.$options.__file;
     if (!filePath) return;
 
+    const title = vm.$options._componentTag;
+    const route = getMatchedRoute(vm);
+
+    // ----- title -----
     const $title = document.createElement('span');
 
     if (vm.$parent === vm.$root) {
       $title.innerText = 'Root';
       $title.className = 'vue-inspector-blue';
-    } else if (isRouterView(vm)) {
+    } else if (route) {
       $title.innerText = 'RouterView';
       $title.className = 'vue-inspector-purple';
+      $title.title = route.path;
     } else {
-      $title.innerText = title || 'unknown';
+      $title.innerText = title || '?';
       $title.className = 'vue-inspector-green';
+      $title.title = title;
     }
 
+    // ----- filePath -----
     const $filePath = document.createElement('span');
     $filePath.innerText = filePath;
     $filePath.title = filePath;
 
+    // ----- item -----
     const $item = document.createElement('li');
     $item.appendChild($title);
     $item.appendChild($filePath);
