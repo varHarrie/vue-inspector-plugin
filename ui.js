@@ -134,7 +134,7 @@ function showDropdown(e) {
       if (vm.$el && vm.$el.nodeType === 1) {
         showOverlay(vm.$el, $title.innerText);
       } else {
-        hideDropdown();
+        hideOverlay();
       }
     });
 
