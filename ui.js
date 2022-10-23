@@ -131,7 +131,11 @@ function showDropdown(e) {
     });
 
     $item.addEventListener('mouseenter', () => {
-      showOverlay(vm.$el, $title.innerText);
+      if (vm.$el && vm.$el.nodeType === 1) {
+        showOverlay(vm.$el, $title.innerText);
+      } else {
+        hideDropdown();
+      }
     });
 
     $dropdown.appendChild($item);
