@@ -98,7 +98,7 @@ function showDropdown(e) {
 
     if (vm.$parent === vm.$root) {
       $title.innerText = 'Root';
-      $title.className = 'vue-inspector-purple';
+      $title.className = 'vue-inspector-blue';
     } else if (isRouterView(vm)) {
       $title.innerText = 'RouterView';
       $title.className = 'vue-inspector-purple';
@@ -109,6 +109,7 @@ function showDropdown(e) {
 
     const $filePath = document.createElement('span');
     $filePath.innerText = filePath;
+    $filePath.title = filePath;
 
     const $item = document.createElement('li');
     $item.appendChild($title);
@@ -141,11 +142,11 @@ function showDropdown(e) {
   document.body.appendChild($dropdown);
 
   if (point.x + $dropdown.offsetWidth > window.innerWidth) {
-    $dropdown.style.left = window.innerWidth - $dropdown.offsetWidth + 'px';
+    $dropdown.style.left = window.innerWidth - $dropdown.offsetWidth - 8 + 'px';
   }
 
   if (point.y + $dropdown.offsetHeight > window.innerHeight) {
-    $dropdown.style.top = window.innerHeight - $dropdown.offsetHeight + 'px';
+    $dropdown.style.top = window.innerHeight - $dropdown.offsetHeight - 8 + 'px';
   }
 }
 
