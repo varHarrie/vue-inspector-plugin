@@ -19,7 +19,8 @@ class VueInspectorPlugin {
     new webpack.DefinePlugin(variables).apply(compiler);
 
     if (webpack.version.startsWith('5.')) {
-      compiler.options.entry['__vue_inspector__'] = { import: [uiEntry] };
+      const EntryPlugin = require('webpack/lib/EntryPlugin');
+      new EntryPlugin(__dirname, './ui.js').apply(compiler);
     } else {
       compiler.options.entry['__vue_inspector__'] = [uiEntry];
     }
