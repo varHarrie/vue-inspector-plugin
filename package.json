@@ -1,6 +1,6 @@
 {
   "name": "vue-inspector-plugin",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A webpack plugin implements automatically open corresponding file in vscode when click element in browser.",
   "main": "index.js",
   "files": [
