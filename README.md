@@ -1,8 +1,14 @@
 # vue-inspector-plugin
 
-A webpack plugin implements automatically open corresponding file in vscode when click element in browser.
+A plugin implements automatically open corresponding file in vscode when click element in browser.
 
-> It supports webpack 4 and 5.
+## Compatibility
+
+|           | vue 2 | vue 3 |
+| --------- | ----- | ----- |
+| vite      | ✅    | ✅    |
+| webpack 4 | ✅    | ✅    |
+| webpack 5 | ✅    | ✅    |
 
 ## Installation
 
@@ -12,15 +18,28 @@ npm install --save-dev vue-inspector-plugin
 
 ## Usage
 
+- Vite
+
+```js
+// vite.config.js
+import { defineConfig } from 'vite';
+import VueInspector from 'vue-inspector-plugin/vite';
+import Vue from '@vitejs/plugin-vue';
+
+export default defineConfig({
+  plugins: [Vue(), VueInspector()],
+});
+```
+
+- Webpack
+
 ```js
 // vue.config.js
-const VueInspectorPlugin = require('vue-inspector-plugin');
+const VueInspector = require('vue-inspector-plugin/webpack').default;
 
 module.exports = {
   chainWebpack(config) {
-    if (process.env.NODE_ENV === 'development') {
-      config.plugin('VueInspectorPlugin').use(new VueInspectorPlugin());
-    }
+    config.plugin('VueInspector').use(VueInspector());
   },
 };
 ```
@@ -32,4 +51,4 @@ module.exports = {
 
 ## Snapshot
 
-![snapshot](./assets/snapshot.png)
+![snapshot](./assets/snapshot.gif)

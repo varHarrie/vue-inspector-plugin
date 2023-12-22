@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "version": "0.0.1",
+  "name": "playground-vite",
+  "scripts": {
+    "dev": "nodemon -w '../../src/**/*.ts' -e .ts -x vite"
+  },
+  "dependencies": {
+    "vue": "^3.3.11",
+    "@vue/compiler-sfc": "^3.3.11",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "4.5.2",
+    "vite": "^5.0.4",
+    "vite-plugin-inspect": "^0.8.1"
+  }
+}

@@ -27,6 +27,7 @@
   padding: 0 8px 0 12px;
   display: flex;
   align-items: center;
+  gap: 8px;
   line-height: 28px;
   word-break: keep-all;
   white-space: nowrap;
@@ -57,9 +58,10 @@
 }
 
 .vue-inspector-dropdown > li > span:last-of-type {
-  margin-left: 8px;
+  margin-right: auto;
   flex: 1;
   min-width: 0;
+  max-width: unset;
 }
 
 .vue-inspector-dropdown .vue-inspector-green {
@@ -74,8 +76,12 @@
   color: #4b7eff;
 }
 
+.vue-inspector-dropdown .vue-inspector-gray {
+  color: #878b95;
+}
+
 .vue-inspector-dropdown > li::after {
-  margin-left: 4px;
+  margin-left: -4px;
   display: block;
   width: 4px;
   height: 4px;

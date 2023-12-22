@@ -1,7 +1,6 @@
-import './ui.css';
+import '~vue-inspector-plugin/style';
+import options from '~vue-inspector-plugin/options';
 
-const ROOT = process.env.__VUE_INSPECTOR_ROOT__;
-const MODIFIER_KEY = process.env.__VUE_INSPECTOR_MODIFIER_KEY__;
 const SUPPORTED_MODIFIER_KEYS = ['shift', 'ctrl', 'alt', 'meta'];
 
 let $dropdown;
@@ -9,8 +8,9 @@ let $overlay;
 
 function findVm(el) {
   while (el) {
-    if (el.__vue__) return el.__vue__;
-    el = el.parentNode;
+    if (el.__vue__) return el.__vue__; // Vue 2
+    if (el.__vueParentComponent) return el.__vueParentComponent; // Vue 3
+    el = el.parentElement;
   }
 }
 
@@ -19,22 +19,71 @@ function getVmChain(vm) {
 
   while (vm) {
     chain.push(vm);
-    vm = vm.$parent;
+    if (vm.$parent) {
+      vm = vm.$parent; // Vue 2
+    } else if (vm.parent) {
+      vm = vm.parent; // Vue 3
+    } else {
+      break;
+    }
   }
 
   return chain;
 }
 
-function getMatchedRoute(vm) {
-  if (!vm.$route) return undefined;
+function getComponentPath(vm) {
+  if (vm.$options) return vm.$options.__file; // Vue 2
+  if (vm.type) return (vm.type.__file || '').replace(options.cwd, ''); // Vue 3
+  return '';
+}
 
-  return vm.$route.matched.find((route) => {
-    return Object.keys(route.instances).some((name) => route.instances[name] === vm);
-  });
+function getComponentName(vm) {
+  if (vm.$options) return vm.$options._componentTag; // Vue 2
+  if (vm.type) return vm.type.name; // Vue 3
+  return '';
+}
+
+function getElPosition(el) {
+  return el.__vnode?.props?.[`__${options.dataKey}`] || el[`__${options.dataKey}`] || '';
+}
+
+function getElName(el) {
+  const tag = el.tagName.toLowerCase();
+  const classNames = el.className ? '.' + el.className.split(' ').join('.') : '';
+  const id = el.id ? '#' + el.id : '';
+  return tag + id + classNames;
+}
+
+function isRoot(vm) {
+  if (vm.$parent) {
+    return vm.$parent === vm.$root;
+  } else {
+    return !vm.parent;
+  }
+}
+
+function getMatchedRoute(vm) {
+  let route;
+
+  if (vm.$route) {
+    route = vm.$route; // Vue 2
+  } else {
+    route = vm.appContext?.config?.globalProperties?.$route; // Vue 3
+  }
+
+  if (route) {
+    return route.matched.find((route) => {
+      return Object.values(route.components).some((component) => {
+        return component.__file.replace(options.cwd, '') === getComponentPath(vm);
+      });
+    });
+  }
+
+  return undefined;
 }
 
 function matchModifierKey(e) {
-  const conditions = MODIFIER_KEY.split('|');
+  const conditions = options.modifierKey.split('|');
 
   return conditions.some((condition) => {
     return condition
@@ -82,6 +131,8 @@ function hideOverlay() {
 function showDropdown(e) {
   const vm = findVm(e.target);
   const vms = getVmChain(vm);
+  if (!vm || !vms.length) return;
+
   const point = { x: e.clientX + 1, y: e.clientY + 1 };
 
   $dropdown = document.createElement('ul');
@@ -89,21 +140,54 @@ function showDropdown(e) {
   $dropdown.style.left = point.x + 'px';
   $dropdown.style.top = point.y + 'px';
 
-  vms.forEach((vm) => {
-    const filePath = vm.$options.__file;
-    if (!filePath) return;
+  const position = getElPosition(e.target).replace(/^\//, '');
 
-    const title = vm.$options._componentTag;
-    const route = getMatchedRoute(vm);
+  if (position) {
+    // ----- title -----
+    const $title = document.createElement('span');
+    const title = getElName(e.target);
+    $title.innerText = title;
+    $title.className = 'vue-inspector-gray';
+
+    // ----- item -----
+    const $item = document.createElement('li');
+    $item.appendChild($title);
+
+    $item.addEventListener('click', () => {
+      const $link = document.createElement('a');
+      $link.href = `vscode://file/${position}`;
+      $link.click();
+      hideDropdown();
+      hideOverlay();
+    });
+
+    $item.addEventListener('mouseenter', () => {
+      const el = e.target;
+
+      if (el && el.nodeType === 1) {
+        showOverlay(el, $title.innerText);
+      } else {
+        hideOverlay();
+      }
+    });
+
+    $dropdown.appendChild($item);
+  }
+
+  vms.forEach((vm) => {
+    const filePath = getComponentPath(vm);
+    if (!filePath) return;
 
     // ----- title -----
     const $title = document.createElement('span');
+    const title = getComponentName(vm) || filePath.split('/').pop();
+    const route = getMatchedRoute(vm);
 
-    if (vm.$parent === vm.$root) {
+    if (isRoot(vm)) {
       $title.innerText = 'Root';
       $title.className = 'vue-inspector-blue';
     } else if (route) {
-      $title.innerText = 'RouterView';
+      $title.innerText = title || '?';
       $title.className = 'vue-inspector-purple';
       $title.title = route.path;
     } else {
@@ -123,16 +207,19 @@ function showDropdown(e) {
     $item.appendChild($filePath);
 
     $item.addEventListener('click', () => {
+      const fullPath = `${options.cwd}/${filePath}`.replace(/^\//, '');
       const $link = document.createElement('a');
-      $link.href = `vscode://file/${ROOT}/${filePath}`;
+      $link.href = `vscode://file/${fullPath}`;
       $link.click();
       hideDropdown();
       hideOverlay();
     });
 
     $item.addEventListener('mouseenter', () => {
-      if (vm.$el && vm.$el.nodeType === 1) {
-        showOverlay(vm.$el, $title.innerText);
+      const el = vm.$el || vm.vnode?.el;
+
+      if (el && el.nodeType === 1) {
+        showOverlay(el, $title.innerText);
       } else {
         hideOverlay();
       }
