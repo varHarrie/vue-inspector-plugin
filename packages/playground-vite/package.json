@@ -1,0 +1,19 @@
+{
+  "name": "playground-vite",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon -w '../vue-inspector-plugin/dist/' -x vite"
+  },
+  "dependencies": {
+    "@arco-design/web-vue": "^2.53.3",
+    "@vue/compiler-sfc": "^3.3.11",
+    "vue": "^3.3.11",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "4.5.2",
+    "vite": "^5.0.4",
+    "vite-plugin-inspect": "^0.8.1"
+  }
+}
