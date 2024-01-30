@@ -129,7 +129,7 @@ function getComponentTitle(vm: VueInstance) {
 }
 
 function getComponentPath(vm: VueInstance) {
-  if ('$options' in vm) return vm.$options.__file || '';
+  if ('$options' in vm) return (vm.$options.__file || '').replace(options.cwd, '');
   if (vm.type) return (vm.type.__file || '').replace(options.cwd, '');
   return '';
 }
@@ -137,8 +137,11 @@ function getComponentPath(vm: VueInstance) {
 function getComponentLocation(vm: VueInstance): string {
   let location = '';
 
-  if ('$el' in vm && vm.$el) location = (vm.$el[`__${options.dataKey}`] as string) || '';
-  else if ('vnode' in vm && vm.vnode?.props) location = (vm.vnode.props[`__${options.dataKey}`] as string) || '';
+  if ('$el' in vm && vm.$el) {
+    location = (vm.$el[`__${options.dataKey}`] as string) || '';
+  } else if ('vnode' in vm && vm.vnode?.props) {
+    location = (vm.vnode.props[`__${options.dataKey}`] as string) || '';
+  }
 
   if (location) return location.replace(options.cwd, '');
 

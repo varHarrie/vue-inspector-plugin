@@ -1,4 +1,4 @@
-const vueInspectorPlugin = require('../../dist/webpack.cjs').default;
+const vueInspectorPlugin = require('vue-inspector-plugin/webpack').default;
 
 module.exports = {
   chainWebpack(config) {

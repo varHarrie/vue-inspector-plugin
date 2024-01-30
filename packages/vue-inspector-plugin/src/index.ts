@@ -64,7 +64,7 @@ function insertPosition(code: string, pathname: string) {
 function hidePosition(code: string) {
   const s = new MagicString(code);
 
-  if (code.includes('_c = _vm._self._c;')) {
+  if (/_c\s*=\s*_vm\._self\._c/.test(code)) {
     // Vue 2
     s.prepend(`
 function __hideVueInspectorPosition(options) {
@@ -78,16 +78,20 @@ function __hideVueInspectorPosition(options) {
 }
     `);
 
-    s.replace(/(_c = _vm._self._c;)/g, () => {
-      return '_c = (type, options, ...args) => _vm._self._c(type, __hideVueInspectorPosition(options), ...args);';
-    });
+    s.replace(
+      /_c\s*=\s*_vm\._self\._c/g,
+      '_c = (type, options, ...args) => _vm._self._c(type, __hideVueInspectorPosition(options), ...args)',
+    );
   } else {
     const names = new Set<string>();
     // Vue 3
-    s.replace(/(createElementVNode|createElementBlock|createVNode|createBlock) as _\1,?/g, (match, name) => {
-      names.add(name);
-      return match.replace(`_${name}`, `__${name}`);
-    });
+    s.replace(
+      /(createElementVNode|createElementBlock|createVNode|createBlock) as _\1,?/g,
+      (match, name) => {
+        names.add(name);
+        return match.replace(`_${name}`, `__${name}`);
+      },
+    );
 
     if (names.size) {
       s.append(`
