@@ -3,12 +3,15 @@ import { createUnplugin } from 'unplugin';
 import type { Options } from './types';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import MagicString from 'magic-string';
 import { parse, transform } from '@vue/compiler-dom';
 
 const VIRTUAL_ID = '~vue-inspector-plugin';
 const EXCLUDED_TAG = ['script', 'style', 'template'];
 const DATA_KEY = 'data-v-pos';
+
+const dirname = import.meta.url ? path.dirname(fileURLToPath(import.meta.url)) : __dirname;
 
 type VueQuery = {
   vue?: boolean;
@@ -117,7 +120,7 @@ function __hideVueInspectorPosition(options) {
 }
 
 function getInspectorScript() {
-  return fs.readFile(path.join(__dirname, './inspector/index.js'), 'utf-8');
+  return fs.readFile(path.join(dirname, './inspector/index.js'), 'utf-8');
 }
 
 export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) => {
@@ -216,7 +219,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
         entry['vue-inspector-plugin'] = VIRTUAL_ID;
       } else {
         const EntryPlugin = require('webpack/lib/EntryPlugin');
-        new EntryPlugin(__dirname, `~vue-inspector-plugin`).apply(compiler);
+        new EntryPlugin(dirname, `~vue-inspector-plugin`).apply(compiler);
       }
     },
   });
