@@ -2,13 +2,17 @@
 
 A plugin implements automatically open corresponding file in vscode when click element in browser.
 
+Note: If you are using Vue 3 and Vite, please check out [vite-plugin-vue-inspector-plus](https://github.com/varHarrie/vite-plugin-vue-inspector-plus).
+
 ## Compatibility
 
 |           | vue 2 | vue 3 |
 | --------- | ----- | ----- |
-| vite      | ✅    | ✅    |
-| webpack 4 | ✅    | ✅    |
-| webpack 5 | ✅    | ✅    |
+| vite      | ✅    | 🟡    |
+| webpack 4 | ✅    | 🟡    |
+| webpack 5 | ✅    | 🟡    |
+
+🟡: There may be problems in high versions.
 
 ## Installation
 
